@@ -1,0 +1,7 @@
+{
+  "default_theme": "dark",
+  "button_color": "#000000",
+  "sidebar_color": "#000000",
+  "card_color": "#000000",
+  "default_server_limit": 1
+}

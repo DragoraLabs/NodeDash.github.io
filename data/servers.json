@@ -1,0 +1,115 @@
+[
+  {
+    "uuid": "86ac7870-633d-4ae9-91f3-08b606673815",
+    "name": "ttrhg",
+    "nodeId": "node-1",
+    "runtime": "node",
+    "entryFile": "index.js",
+    "startCommand": null,
+    "ramLimitMb": 512,
+    "cpuLimitPercent": 100,
+    "autoRestart": true,
+    "status": "stopped",
+    "createdAt": "2026-03-04T12:54:11.281Z",
+    "updatedAt": "2026-03-04T16:17:06Z",
+    "createdBy": "u-admin",
+    "lastExit": {
+      "code": null,
+      "at": "2026-03-04T14:33:09Z",
+      "reason": "start_validation_failed"
+    },
+    "resources": {
+      "cpuPercent": 0,
+      "ramMb": 0
+    },
+    "error": "fetch failed",
+    "pid": null
+  },
+  {
+    "uuid": "048b821c-acda-47f7-a4a1-678f540275d0",
+    "name": "ttrhg",
+    "nodeId": "node-1",
+    "runtime": "node",
+    "entryFile": "index.js",
+    "startCommand": null,
+    "ramLimitMb": 512,
+    "cpuLimitPercent": 100,
+    "autoRestart": true,
+    "status": "running",
+    "createdAt": "2026-03-04T12:54:40.364Z",
+    "updatedAt": "2026-03-04T12:55:15.182Z",
+    "createdBy": "u-admin",
+    "lastExit": null,
+    "resources": {
+      "cpuPercent": 0,
+      "ramMb": 0
+    },
+    "pid": null
+  },
+  {
+    "uuid": "fe3b9860-441a-4d16-b544-c5475ad7c812",
+    "name": "dd",
+    "nodeId": "node-1",
+    "runtime": "node",
+    "entryFile": "index.js",
+    "startCommand": null,
+    "ramLimitMb": 512,
+    "cpuLimitPercent": 100,
+    "autoRestart": true,
+    "status": "stopped",
+    "createdAt": "2026-03-04T13:11:16.549Z",
+    "updatedAt": "2026-03-04T13:11:21.651Z",
+    "createdBy": "079cd272-7b86-4eeb-89b6-aca9faddfe16",
+    "lastExit": {
+      "code": null,
+      "at": "2026-03-04T13:11:16Z",
+      "reason": "start_validation_failed"
+    },
+    "resources": {
+      "cpuPercent": 0,
+      "ramMb": 0
+    },
+    "error": "Wings error 400: Entry file not found: index.js. Upload it first in Files page or set startCommand.",
+    "pid": null
+  },
+  {
+    "uuid": "adcc3368-7cc0-492b-a5ef-80ff2cb0f00b",
+    "name": "dd",
+    "nodeId": "node-1",
+    "runtime": "node",
+    "entryFile": "index.js",
+    "startCommand": null,
+    "ramLimitMb": 512,
+    "cpuLimitPercent": 100,
+    "autoRestart": true,
+    "status": "creating",
+    "createdAt": "2026-03-04T13:11:26.878Z",
+    "updatedAt": "2026-03-04T13:11:26.878Z",
+    "createdBy": "079cd272-7b86-4eeb-89b6-aca9faddfe16",
+    "lastExit": null,
+    "resources": {
+      "cpuPercent": 0,
+      "ramMb": 0
+    }
+  },
+  {
+    "uuid": "9a1252a2-6ad9-424c-9d62-0c33e388276e",
+    "name": "dd",
+    "nodeId": "node-1",
+    "runtime": "node",
+    "entryFile": "index.js",
+    "startCommand": null,
+    "ramLimitMb": 512,
+    "cpuLimitPercent": 100,
+    "autoRestart": true,
+    "status": "creating",
+    "createdAt": "2026-03-04T13:11:27.731Z",
+    "updatedAt": "2026-03-04T13:11:27.731Z",
+    "createdBy": "079cd272-7b86-4eeb-89b6-aca9faddfe16",
+    "lastExit": null,
+    "resources": {
+      "cpuPercent": 0,
+      "ramMb": 0
+    }
+  }
+]
