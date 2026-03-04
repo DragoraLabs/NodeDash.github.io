@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Server Resources</title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <header id="header"></header>
+  <main>
+    <section class="card">
+      <h2>Resources: <code id="serverId"></code></h2>
+      <div class="grid two">
+        <article class="card">
+          <h3>CPU Usage</h3>
+          <div id="cpuUsage">-</div>
+        </article>
+        <article class="card">
+          <h3>RAM Usage</h3>
+          <div id="ramUsage">-</div>
+        </article>
+        <article class="card">
+          <h3>Status</h3>
+          <div id="statusUsage">-</div>
+        </article>
+        <article class="card">
+          <h3>PID</h3>
+          <div id="pidUsage">-</div>
+        </article>
+      </div>
+      <p class="small" id="updatedAt"></p>
+    </section>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script>
+    const serverUuid = NodeWings.parseServerUuidFromPath();
+    document.getElementById("serverId").textContent = serverUuid || "unknown";
+
+    function draw(payload) {
+      document.getElementById("cpuUsage").textContent = `${Number(payload?.cpuPercent || 0).toFixed(2)}%`;
+      document.getElementById("ramUsage").textContent = `${Number(payload?.ramMb || 0).toFixed(2)} MB`;
+      document.getElementById("statusUsage").textContent = payload?.status || "unknown";
+      document.getElementById("pidUsage").textContent = payload?.pid || "-";
+      document.getElementById("updatedAt").textContent = `Updated ${new Date().toLocaleTimeString()}`;
+    }
+
+    async function refresh() {
+      const payload = await NodeWings.api(`/api/servers/${serverUuid}/resources`);
+      draw(payload.resource || {});
+    }
+
+    (async () => {
+      const user = await NodeWings.initPage("Resources");
+      if (!user) return;
+      NodeWings.renderHeader(`Resources (${user.email})`);
+
+      if (!serverUuid) {
+        document.getElementById("updatedAt").textContent = "Missing server UUID in URL";
+        return;
+      }
+
+      try {
+        await refresh();
+      } catch (error) {
+        document.getElementById("updatedAt").textContent = `Error: ${error.message}`;
+      }
+
+      setInterval(async () => {
+        try {
+          await refresh();
+        } catch {}
+      }, 5000);
+
+      const token = NodeWings.getToken();
+      const ws = NodeWings.connectServerSocket(token, (message) => {
+        if (message.type === "connected") {
+          ws.send(
+            JSON.stringify({
+              type: "subscribe",
+              channel: "server",
+              uuid: serverUuid,
+            })
+          );
+          return;
+        }
+
+        if (message.type === "server_event" && message.uuid === serverUuid) {
+          if (message.event.type === "resource") {
+            draw(message.event.payload || {});
+          }
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

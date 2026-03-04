@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NodeWings Admin</title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <header id="header"></header>
+  <main>
+    <section class="card">
+      <h2>User Management</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Theme</th>
+            <th>Server Limit</th>
+            <th>Servers</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="usersBody"></tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h3>Add User</h3>
+      <div class="grid two">
+        <label>Name
+          <input id="newUserName" placeholder="Name" />
+        </label>
+        <label>Email
+          <input id="newUserEmail" placeholder="user@example.com" type="email" />
+        </label>
+        <label>Password
+          <input id="newUserPassword" placeholder="Password" type="password" />
+        </label>
+        <label>Role
+          <select id="newUserRole">
+            <option value="user">user</option>
+            <option value="admin">admin</option>
+          </select>
+        </label>
+        <label>Server Limit (-1 = unlimited)
+          <input id="newUserLimit" type="number" value="1" />
+        </label>
+        <label>Theme
+          <select id="newUserTheme">
+            <option value="gray">gray</option>
+            <option value="light">light</option>
+            <option value="dark">dark</option>
+          </select>
+        </label>
+      </div>
+      <div class="row" style="margin-top: 10px;">
+        <button id="addUserBtn">Add User</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Global Settings</h2>
+      <div class="grid two">
+        <label>Default Theme
+          <select id="defaultTheme">
+            <option value="gray">gray</option>
+            <option value="light">light</option>
+            <option value="dark">dark</option>
+          </select>
+        </label>
+        <label>Default Server Limit (-1 = unlimited)
+          <input id="defaultServerLimit" type="number" />
+        </label>
+        <label>Button Color
+          <input id="buttonColor" type="color" value="#4a4a4a" />
+        </label>
+        <label>Sidebar Color
+          <input id="sidebarColor" type="color" value="#2f2f2f" />
+        </label>
+        <label>Card Color
+          <input id="cardColor" type="color" value="#ffffff" />
+        </label>
+      </div>
+      <div class="row" style="margin-top: 10px;">
+        <button id="saveSettingsBtn">Save Global Settings</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Node Management</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>ID</th>
+            <th>URL</th>
+            <th>Status</th>
+            <th>Last Heartbeat</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="nodesBody"></tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h3>Add Node</h3>
+      <div class="grid two">
+        <label>Name
+          <input id="newNodeName" placeholder="Node Name" />
+        </label>
+        <label>URL
+          <input id="newNodeUrl" placeholder="http://127.0.0.1:8080" />
+        </label>
+        <label>Shared Secret
+          <input id="newNodeSecret" placeholder="nodewings-shared-secret" />
+        </label>
+        <label>Node ID (optional)
+          <input id="newNodeId" placeholder="node-2" />
+        </label>
+      </div>
+      <div class="row" style="margin-top: 10px;">
+        <button id="addNodeBtn">Add Node</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Audit Logs</h2>
+      <div id="logs" class="console" style="min-height: 220px;"></div>
+      <p class="small" id="status"></p>
+    </section>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script>
+    const statusEl = document.getElementById("status");
+
+    function userRow(user) {
+      const limit = Number(user.server_limit ?? 1);
+      return `
+        <tr>
+          <td>${user.name}</td>
+          <td>${user.email}</td>
+          <td>
+            <select id="role-${user.id}">
+              <option value="user" ${user.role === "user" ? "selected" : ""}>user</option>
+              <option value="admin" ${user.role === "admin" ? "selected" : ""}>admin</option>
+            </select>
+          </td>
+          <td>
+            <select id="theme-${user.id}">
+              <option value="gray" ${user.theme === "gray" ? "selected" : ""}>gray</option>
+              <option value="light" ${user.theme === "light" ? "selected" : ""}>light</option>
+              <option value="dark" ${user.theme === "dark" ? "selected" : ""}>dark</option>
+            </select>
+          </td>
+          <td><input id="limit-${user.id}" type="number" value="${Number.isFinite(limit) ? limit : 1}" /></td>
+          <td>${user.server_count || 0}</td>
+          <td>
+            <div class="row">
+              <button class="secondary" onclick="saveUser('${user.id}')">Save</button>
+              <button class="danger" onclick="deleteUser('${user.id}')">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    async function loadUsers() {
+      const payload = await NodeWings.api("/api/admin/users");
+      const usersBody = document.getElementById("usersBody");
+      usersBody.innerHTML = payload.users.map(userRow).join("");
+    }
+
+    async function loadSettings() {
+      const payload = await NodeWings.api("/api/admin/panel-settings");
+      const s = payload.settings;
+      document.getElementById("defaultTheme").value = s.default_theme;
+      document.getElementById("defaultServerLimit").value = Number(s.default_server_limit ?? 1);
+      document.getElementById("buttonColor").value = s.button_color;
+      document.getElementById("sidebarColor").value = s.sidebar_color;
+      document.getElementById("cardColor").value = s.card_color;
+    }
+
+    async function loadNodes() {
+      const payload = await NodeWings.api("/api/admin/nodes");
+      const body = document.getElementById("nodesBody");
+      body.innerHTML = payload.nodes
+        .map((node) => `
+          <tr>
+            <td>${node.name}</td>
+            <td><code>${node.id}</code></td>
+            <td>${node.url}</td>
+            <td>${node.status}</td>
+            <td>${node.lastHeartbeat ? new Date(node.lastHeartbeat).toLocaleString() : "-"}</td>
+            <td><button class="danger" onclick="removeNode('${node.id}')">Remove</button></td>
+          </tr>
+        `)
+        .join("");
+    }
+
+    async function loadLogs() {
+      const payload = await NodeWings.api("/api/admin/logs?limit=150");
+      const logsEl = document.getElementById("logs");
+      logsEl.textContent = payload.logs
+        .map((log) => {
+          const main = [log.type, log.actorEmail || "", log.serverUuid || "", log.nodeId || "", log.message || ""]
+            .filter(Boolean)
+            .join(" ");
+          return `[${log.ts}] ${main}`;
+        })
+        .join("\n");
+    }
+
+    async function loadAdmin() {
+      await Promise.all([loadUsers(), loadSettings(), loadNodes(), loadLogs()]);
+      NodeWings.showInfo(statusEl, `Updated ${new Date().toLocaleTimeString()}`);
+    }
+
+    window.saveUser = async (id) => {
+      try {
+        await NodeWings.api(`/api/admin/users/${id}`, {
+          method: "PATCH",
+          body: {
+            role: document.getElementById(`role-${id}`).value,
+            theme: document.getElementById(`theme-${id}`).value,
+            server_limit: Number(document.getElementById(`limit-${id}`).value),
+          },
+        });
+        NodeWings.showInfo(statusEl, "User updated");
+        await loadUsers();
+      } catch (error) {
+        NodeWings.showError(statusEl, error.message);
+      }
+    };
+
+    window.deleteUser = async (id) => {
+      if (!confirm("Delete this user?")) return;
+      try {
+        await NodeWings.api(`/api/admin/users/${id}`, { method: "DELETE" });
+        NodeWings.showInfo(statusEl, "User deleted");
+        await loadUsers();
+      } catch (error) {
+        NodeWings.showError(statusEl, error.message);
+      }
+    };
+
+    window.removeNode = async (id) => {
+      if (!confirm("Remove this node?")) return;
+      try {
+        await NodeWings.api(`/api/admin/nodes/${id}`, { method: "DELETE" });
+        NodeWings.showInfo(statusEl, "Node removed");
+        await loadNodes();
+      } catch (error) {
+        NodeWings.showError(statusEl, error.message);
+      }
+    };
+
+    document.getElementById("addUserBtn").addEventListener("click", async () => {
+      try {
+        await NodeWings.api("/api/admin/users", {
+          method: "POST",
+          body: {
+            name: document.getElementById("newUserName").value.trim(),
+            email: document.getElementById("newUserEmail").value.trim(),
+            password: document.getElementById("newUserPassword").value,
+            role: document.getElementById("newUserRole").value,
+            server_limit: Number(document.getElementById("newUserLimit").value),
+            theme: document.getElementById("newUserTheme").value,
+          },
+        });
+        NodeWings.showInfo(statusEl, "User added");
+        await loadUsers();
+      } catch (error) {
+        NodeWings.showError(statusEl, error.message);
+      }
+    });
+
+    document.getElementById("saveSettingsBtn").addEventListener("click", async () => {
+      try {
+        await NodeWings.api("/api/admin/panel-settings", {
+          method: "PUT",
+          body: {
+            default_theme: document.getElementById("defaultTheme").value,
+            default_server_limit: Number(document.getElementById("defaultServerLimit").value),
+            button_color: document.getElementById("buttonColor").value,
+            sidebar_color: document.getElementById("sidebarColor").value,
+            card_color: document.getElementById("cardColor").value,
+          },
+        });
+        NodeWings.showInfo(statusEl, "Global settings saved");
+        await loadSettings();
+      } catch (error) {
+        NodeWings.showError(statusEl, error.message);
+      }
+    });
+
+    document.getElementById("addNodeBtn").addEventListener("click", async () => {
+      try {
+        await NodeWings.api("/api/admin/nodes", {
+          method: "POST",
+          body: {
+            name: document.getElementById("newNodeName").value.trim(),
+            url: document.getElementById("newNodeUrl").value.trim(),
+            secret: document.getElementById("newNodeSecret").value.trim(),
+            id: document.getElementById("newNodeId").value.trim() || undefined,
+          },
+        });
+        NodeWings.showInfo(statusEl, "Node added");
+        await loadNodes();
+      } catch (error) {
+        NodeWings.showError(statusEl, error.message);
+      }
+    });
+
+    (async () => {
+      const user = await NodeWings.initPage("Admin Panel", { adminOnly: true });
+      if (!user) return;
+
+      try {
+        await loadAdmin();
+      } catch (error) {
+        NodeWings.showError(statusEl, error.message);
+      }
+
+      setInterval(async () => {
+        try {
+          await loadLogs();
+        } catch {
+          // ignore interval errors
+        }
+      }, 7000);
+    })();
+  </script>
+</body>
+</html>

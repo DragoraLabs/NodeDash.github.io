@@ -1,0 +1,85 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NodeWings Nodes</title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <header id="header"></header>
+  <main>
+    <section class="card">
+      <h2>Nodes</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Node ID</th>
+            <th>IP</th>
+            <th>Status</th>
+            <th>CPU</th>
+            <th>RAM</th>
+            <th>Last Heartbeat</th>
+          </tr>
+        </thead>
+        <tbody id="nodesBody"></tbody>
+      </table>
+      <p class="small" id="status"></p>
+    </section>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script>
+    function statusTag(status) {
+      if (status === "online") return '<span class="tag ok">Online</span>';
+      return '<span class="tag bad">Offline</span>';
+    }
+
+    async function renderNodes() {
+      const payload = await NodeWings.api("/api/nodes");
+      const body = document.getElementById("nodesBody");
+      if (!payload.nodes.length) {
+        body.innerHTML = '<tr><td colspan="7" class="small">No nodes configured.</td></tr>';
+        return;
+      }
+
+      body.innerHTML = payload.nodes
+        .map((node) => {
+          const cpu = Number(node.resources?.cpuPercent || 0).toFixed(2);
+          const ramUsed = Number(node.resources?.ramUsedMb || 0).toFixed(1);
+          const ramTotal = Number(node.resources?.ramTotalMb || 0).toFixed(1);
+          return `
+            <tr>
+              <td>${node.name}</td>
+              <td><code>${node.id}</code></td>
+              <td>${node.ip || "-"}</td>
+              <td>${statusTag(node.status)}</td>
+              <td>${cpu}%</td>
+              <td>${ramUsed} / ${ramTotal} MB</td>
+              <td>${node.lastHeartbeat ? new Date(node.lastHeartbeat).toLocaleString() : "-"}</td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
+    (async () => {
+      const user = await NodeWings.initPage("Nodes");
+      if (!user) return;
+
+      const refresh = async () => {
+        try {
+          await renderNodes();
+          document.getElementById("status").textContent = `Updated ${new Date().toLocaleTimeString()}`;
+        } catch (error) {
+          document.getElementById("status").textContent = `Error: ${error.message}`;
+        }
+      };
+
+      await refresh();
+      setInterval(refresh, 5000);
+    })();
+  </script>
+</body>
+</html>

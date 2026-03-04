@@ -1,0 +1,67 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NodeWings Login</title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <header id="header"></header>
+  <main>
+    <section class="auth-wrap">
+      <article class="card">
+        <h2 class="auth-title">Sign in to NodeWings</h2>
+        <p class="auth-subtitle">Control your nodes, servers, logs, files, and resources from one secure panel.</p>
+        <p class="small">Default admin: <code>admin@example.com</code> / <code>admin123</code></p>
+        <div class="grid">
+          <label>Email
+            <input id="email" type="email" value="admin@example.com" />
+          </label>
+          <label>Password
+            <input id="password" type="password" value="admin123" />
+          </label>
+          <button id="loginBtn" style="width: 100%;">Enter Control Plane</button>
+          <div id="status" class="small"></div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script>
+    const statusEl = document.getElementById("status");
+    const emailEl = document.getElementById("email");
+    const passwordEl = document.getElementById("password");
+
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+      try {
+        NodeWings.showInfo(statusEl, "Logging in...");
+        const payload = await NodeWings.api("/api/auth/login", {
+          method: "POST",
+          auth: false,
+          body: {
+            email: emailEl.value,
+            password: passwordEl.value,
+          },
+        });
+
+        NodeWings.setToken(payload.token);
+        location.href = "/dashboard";
+      } catch (error) {
+        NodeWings.showError(statusEl, error.message);
+      }
+    });
+
+    (async () => {
+      await NodeWings.initLoginPage();
+      try {
+        await NodeWings.api("/api/auth/me");
+        location.href = "/dashboard";
+      } catch {
+        // stay on login page
+      }
+    })();
+  </script>
+</body>
+</html>

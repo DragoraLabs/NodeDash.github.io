@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Server Console</title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <header id="header"></header>
+  <main>
+    <section class="card">
+      <h2>Console: <code id="serverId"></code></h2>
+      <div id="consoleOutput" class="console"></div>
+      <div class="row" style="margin-top: 8px;">
+        <input id="commandInput" type="text" placeholder="Type command, e.g. status" />
+        <button id="sendBtn" style="max-width: 180px;">Send Command</button>
+      </div>
+      <p class="small" id="status"></p>
+    </section>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script>
+    const serverUuid = NodeWings.parseServerUuidFromPath();
+    const outputEl = document.getElementById("consoleOutput");
+    const statusEl = document.getElementById("status");
+
+    document.getElementById("serverId").textContent = serverUuid || "unknown";
+
+    function appendLine(line) {
+      outputEl.textContent += line + "\n";
+      outputEl.scrollTop = outputEl.scrollHeight;
+    }
+
+    async function loadHistory() {
+      const payload = await NodeWings.api(`/api/servers/${serverUuid}/events?limit=300`);
+      outputEl.textContent = "";
+      for (const event of payload.events) {
+        if (event.type === "log") {
+          appendLine(event.payload?.line || "");
+        } else if (event.type === "status") {
+          appendLine(`[status] ${JSON.stringify(event.payload)}`);
+        }
+      }
+    }
+
+    async function sendCommand() {
+      const input = document.getElementById("commandInput");
+      const command = input.value.trim();
+      if (!command) return;
+
+      try {
+        await NodeWings.api(`/api/servers/${serverUuid}/console`, {
+          method: "POST",
+          body: { command },
+        });
+        input.value = "";
+      } catch (error) {
+        NodeWings.showError(statusEl, error.message);
+      }
+    }
+
+    document.getElementById("sendBtn").addEventListener("click", sendCommand);
+    document.getElementById("commandInput").addEventListener("keydown", (event) => {
+      if (event.key === "Enter") sendCommand();
+    });
+
+    (async () => {
+      const user = await NodeWings.initPage("Console");
+      if (!user) return;
+      NodeWings.renderHeader(`Console (${user.email})`);
+
+      if (!serverUuid) {
+        NodeWings.showError(statusEl, "Missing server UUID in URL");
+        return;
+      }
+
+      try {
+        await loadHistory();
+      } catch (error) {
+        NodeWings.showError(statusEl, error.message);
+      }
+
+      const token = NodeWings.getToken();
+      const ws = NodeWings.connectServerSocket(token, (message) => {
+        if (message.type === "connected") {
+          ws.send(
+            JSON.stringify({
+              type: "subscribe",
+              channel: "server",
+              uuid: serverUuid,
+            })
+          );
+          return;
+        }
+
+        if (message.type === "server_event" && message.uuid === serverUuid) {
+          if (message.event.type === "log") {
+            appendLine(message.event.payload?.line || "");
+          }
+          if (message.event.type === "status") {
+            appendLine(`[status] ${JSON.stringify(message.event.payload)}`);
+          }
+        }
+      });
+
+      ws.onclose = () => {
+        NodeWings.showError(statusEl, "WebSocket disconnected");
+      };
+    })();
+  </script>
+</body>
+</html>

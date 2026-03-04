@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NodeWings Settings</title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <header id="header"></header>
+  <main>
+    <section class="card">
+      <h2>Account</h2>
+      <div class="grid two">
+        <article class="card">
+          <h3>Name</h3>
+          <p id="userName">-</p>
+        </article>
+        <article class="card">
+          <h3>Email</h3>
+          <p id="userEmail">-</p>
+        </article>
+        <article class="card">
+          <h3>Role</h3>
+          <p id="userRole">-</p>
+        </article>
+        <article class="card">
+          <h3>Server Limit</h3>
+          <p id="userLimit">-</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Theme</h2>
+      <div class="grid two">
+        <label>Choose your theme
+          <select id="themeSelect">
+            <option value="gray">Gray</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
+      </div>
+      <div class="row" style="margin-top: 10px;">
+        <button id="saveThemeBtn">Save Theme</button>
+      </div>
+      <p class="small" id="status"></p>
+    </section>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script>
+    const statusEl = document.getElementById("status");
+    let panelSettings = null;
+
+    function renderUser(user) {
+      document.getElementById("userName").textContent = user.name || "-";
+      document.getElementById("userEmail").textContent = user.email || "-";
+      document.getElementById("userRole").textContent = user.role || "-";
+      document.getElementById("userLimit").textContent = Number(user.server_limit) === -1
+        ? "Unlimited"
+        : String(user.server_limit ?? "-");
+      document.getElementById("themeSelect").value = user.theme || "gray";
+    }
+
+    async function loadSettings() {
+      const payload = await NodeWings.api("/api/settings");
+      panelSettings = payload.settings;
+      renderUser(payload.user);
+      NodeWings.applyTheme(payload.settings, payload.user.theme || payload.settings.default_theme);
+    }
+
+    document.getElementById("saveThemeBtn").addEventListener("click", async () => {
+      try {
+        const theme = document.getElementById("themeSelect").value;
+        const payload = await NodeWings.api("/api/settings/theme", {
+          method: "PUT",
+          body: { theme },
+        });
+
+        renderUser(payload.user);
+        if (panelSettings) {
+          NodeWings.applyTheme(panelSettings, payload.user.theme || panelSettings.default_theme);
+        }
+        NodeWings.showInfo(statusEl, "Theme updated");
+      } catch (error) {
+        NodeWings.showError(statusEl, error.message);
+      }
+    });
+
+    (async () => {
+      const user = await NodeWings.initPage("Settings");
+      if (!user) return;
+
+      try {
+        await loadSettings();
+      } catch (error) {
+        NodeWings.showError(statusEl, error.message);
+      }
+    })();
+  </script>
+</body>
+</html>

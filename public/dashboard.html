@@ -1,0 +1,75 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NodeWings Dashboard</title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <header id="header"></header>
+  <main>
+    <section class="card">
+      <h2>Control Plane Overview</h2>
+      <p class="small">Live cluster snapshot from nodes and server heartbeats.</p>
+    </section>
+
+    <section class="grid two">
+      <article class="card">
+        <h3>Total Servers</h3>
+        <div id="totalServers" class="metric-value">-</div>
+      </article>
+      <article class="card">
+        <h3>Running Servers</h3>
+        <div id="runningServers" class="metric-value">-</div>
+      </article>
+      <article class="card">
+        <h3>Online Nodes</h3>
+        <div id="onlineNodes" class="metric-value">-</div>
+      </article>
+      <article class="card">
+        <h3>Average CPU / RAM</h3>
+        <div id="avgUsage" class="metric-value">-</div>
+      </article>
+    </section>
+
+    <section class="card">
+      <h3>Quick Actions</h3>
+      <div class="row">
+        <a href="/servers/create"><button>Create New Server</button></a>
+        <a href="/servers"><button class="secondary">Manage Servers</button></a>
+        <a href="/nodes"><button class="secondary">View Nodes</button></a>
+      </div>
+      <p class="small" id="updatedAt"></p>
+    </section>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script>
+    async function loadDashboard() {
+      const data = await NodeWings.api("/api/dashboard");
+      document.getElementById("totalServers").textContent = data.totalServers;
+      document.getElementById("runningServers").textContent = data.runningServers;
+      document.getElementById("onlineNodes").textContent = `${data.onlineNodes} / ${data.totalNodes}`;
+      document.getElementById("avgUsage").textContent = `CPU ${data.cpuAverage}% | RAM ${data.ramAverage}%`;
+      document.getElementById("updatedAt").textContent = `Updated: ${new Date(data.generatedAt).toLocaleString()}`;
+    }
+
+    (async () => {
+      const user = await NodeWings.initPage("Dashboard");
+      if (!user) return;
+
+      const refresh = async () => {
+        try {
+          await loadDashboard();
+        } catch (error) {
+          document.getElementById("updatedAt").textContent = `Error: ${error.message}`;
+        }
+      };
+
+      await refresh();
+      setInterval(refresh, 5000);
+    })();
+  </script>
+</body>
+</html>

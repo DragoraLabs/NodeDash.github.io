@@ -1,0 +1,120 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Server</title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <header id="header"></header>
+  <main>
+    <section class="card">
+      <h2>Create Server</h2>
+      <div class="grid two">
+        <label>Name
+          <input id="name" type="text" placeholder="My App Server" />
+        </label>
+        <label>Node
+          <select id="nodeId"></select>
+        </label>
+        <label>Runtime
+          <select id="runtime">
+            <option value="node">Node.js</option>
+            <option value="python">Python</option>
+          </select>
+        </label>
+        <label>Entry File
+          <input id="entryFile" type="text" value="index.js" />
+        </label>
+        <label>RAM Limit (MB)
+          <input id="ramLimitMb" type="number" value="512" min="64" />
+        </label>
+        <label>CPU Limit (%)
+          <input id="cpuLimitPercent" type="number" value="100" min="1" />
+        </label>
+        <label>Custom Start Command (optional)
+          <input id="startCommand" type="text" placeholder="node index.js" />
+        </label>
+        <label>Auto Restart
+          <select id="autoRestart">
+            <option value="true">Enabled</option>
+            <option value="false">Disabled</option>
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <button id="createBtn">Create and Start</button>
+        <a href="/servers"><button class="secondary">Back to Servers</button></a>
+      </div>
+      <p class="small" id="status"></p>
+    </section>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script>
+    const statusEl = document.getElementById("status");
+
+    function updateEntryDefault(runtime) {
+      const entryFile = document.getElementById("entryFile");
+      if (!entryFile.value || entryFile.value === "index.js" || entryFile.value === "app.py") {
+        entryFile.value = runtime === "python" ? "app.py" : "index.js";
+      }
+    }
+
+    async function loadNodes() {
+      const nodes = await NodeWings.api("/api/nodes");
+      const select = document.getElementById("nodeId");
+      select.innerHTML = nodes.nodes
+        .map((node) => `<option value="${node.id}">${node.name} (${node.id})</option>`)
+        .join("");
+    }
+
+    document.getElementById("runtime").addEventListener("change", (event) => {
+      updateEntryDefault(event.target.value);
+    });
+
+    document.getElementById("createBtn").addEventListener("click", async () => {
+      try {
+        NodeWings.showInfo(statusEl, "Creating server...");
+        const payload = {
+          name: document.getElementById("name").value.trim(),
+          nodeId: document.getElementById("nodeId").value,
+          runtime: document.getElementById("runtime").value,
+          entryFile: document.getElementById("entryFile").value.trim(),
+          startCommand: document.getElementById("startCommand").value.trim() || null,
+          ramLimitMb: Number(document.getElementById("ramLimitMb").value),
+          cpuLimitPercent: Number(document.getElementById("cpuLimitPercent").value),
+          autoRestart: document.getElementById("autoRestart").value === "true",
+        };
+
+        if (!payload.name) {
+          throw new Error("Name is required");
+        }
+
+        const created = await NodeWings.api("/api/servers", {
+          method: "POST",
+          body: payload,
+        });
+
+        NodeWings.showInfo(statusEl, `Server created: ${created.server.uuid}`);
+        setTimeout(() => {
+          location.href = "/servers";
+        }, 900);
+      } catch (error) {
+        NodeWings.showError(statusEl, error.message);
+      }
+    });
+
+    (async () => {
+      const user = await NodeWings.initPage("Create Server");
+      if (!user) return;
+      try {
+        await loadNodes();
+      } catch (error) {
+        NodeWings.showError(statusEl, error.message);
+      }
+    })();
+  </script>
+</body>
+</html>
