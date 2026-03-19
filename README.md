@@ -1,58 +1,52 @@
-# NodeDash 🚀
+# NodeDash / NodeWings (No DB)
 
-**Power • Control • Scale**
+This build uses **JSON files only** for persistence. No database.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/DragoraLabs/NodeDash/blob/main/LICENSE)
-[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org)
-[![Express](https://img.shields.io/badge/Express-4.x-black)](https://expressjs.com)
-[![WebSockets](https://img.shields.io/badge/WebSockets-Live-blue)](https://github.com/DragoraLabs/NodeDash)
+Folders:
+- `d:\NodeDash\nodedash` (Panel)
+- `d:\NodeDash\nodedash-wings` (Agent + C++)
 
-**The open-source server management panel** built for game hosts, cloud providers, and devs who want **real control** without the bloat or price tag.
+## Panel (VPS 1)
 
-Tired of overpriced panels that lock you in?  
-NodeDash gives you **full ownership** — manage servers, nodes, users, files, and real-time stats with a clean, fast interface.
-
-**Live Marketing Site & Demo:** [nodedash.gamerhost.qzz.io](https://nodedash.gamerhost.qzz.io/)  
-**GitHub Pages (extra assets):** [nodedash.github.io](https://github.com/DragoraLabs/nodedash.github.io)
-
----
-
-## ✨ Why NodeDash?
-
-- **Full Customization** — Dynamic themes, per-user server limits, admin-controlled UI, and panel settings saved in JSON.
-- **Advanced Security** — JWT + secure cookies, role-based access (admin/user), rate limiting, input validation, and internal node authentication.
-- **Real-Time Everything** — WebSocket hub for live updates, console, server events, and heartbeats.
-- **Modular & Scalable** — Built-in Wings client for talking to remote nodes. Easy to add plugins later.
-- **Multi-Language Runtimes** — Node.js & Python servers out of the box with custom start commands.
-- **Lightweight & Fast** — No heavy frameworks. Just Express + vanilla frontend + JSON storage (swap to DB anytime).
-- **100% Free & Open** — MIT license. No vendor lock-in. Run it on Linux, Windows, Docker, VPS, or bare metal.
-
----
-
-## 📸 Screenshots
-
-![NodeDash Control Plane](https://github.com/DragoraLabs/nodedash.github.io/raw/main/Screenshot%202026-03-07%20161541.png)
-
-*(More screenshots coming as we polish the UI — dashboard, servers, console, nodes, and admin panels are already live!)*
-
----
-
-## 🚀 Quick Start (Takes 2 Minutes)
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/DragoraLabs/NodeDash.git
-cd NodeDash
-
-# 2. Install dependencies
-npm install
-
-# 3. (Optional) Set environment variables
-#    Create a .env file or export these:
-#    DEFAULT_ADMIN_EMAIL=admin@example.com
-#    DEFAULT_ADMIN_PASSWORD=admin123
-#    PORT=3000
-#    HOST=0.0.0.0
-
-# 4. Start the panel
+```powershell
+cd d:\NodeDash\nodedash
+.\install-panel.ps1
+cd panel
 npm start
+```
+
+Open `https://127.0.0.1:8443`
+
+## Wings (VPS 2)
+
+```powershell
+cd d:\NodeDash\nodedash-wings
+.\install-wings.ps1
+.\build-cpp.ps1
+python wings.py
+```
+
+## Node registration flow
+1. Login to panel (first user becomes admin)
+2. Create node in Admin > Nodes
+3. Edit `d:\NodeDash\nodedash-wings\config.json` with:
+   - `panel_url`
+   - `node_id`
+   - `node_token`
+4. Start Wings; it auto-auths to panel and begins heartbeats
+
+## Data files
+Panel stores data in `d:\NodeDash\nodedash\panel\data`:
+- `users.json`
+- `servers.json`
+- `nodes.json`
+- `api_keys.json`
+- `panel_settings.json`
+- `security.json`
+- `sessions.json`
+
+Wings stores server configs in `d:\NodeDash\nodedash-wings\data\servers.json`
+
+## Notes
+- Docker must be installed on Wings host.
+- C++ manager `dockermgr` wraps Docker CLI for container lifecycle and limits.
