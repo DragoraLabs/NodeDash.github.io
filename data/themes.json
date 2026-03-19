@@ -1,0 +1,135 @@
+[
+  {
+    "id": "gray",
+    "name": "Gray",
+    "locked": true,
+    "palette": {
+      "background": "#1a1f26",
+      "sidebar": "#151a21",
+      "card": "#1f252e",
+      "text": "#e6e9ef",
+      "muted": "#9aa3af",
+      "line": "#2a323d",
+      "input_bg": "#232a34",
+      "input_text": "#e6e9ef",
+      "table_head": "#222833",
+      "hover_bg": "rgba(255,255,255,0.04)",
+      "accent": "#4f8cff",
+      "button": "#2d3645"
+    }
+  },
+  {
+    "id": "dark",
+    "name": "Dark",
+    "locked": true,
+    "palette": {
+      "background": "#12151b",
+      "sidebar": "#191d25",
+      "card": "#1d222c",
+      "text": "#eef1f7",
+      "muted": "#9aa4b2",
+      "line": "#2e3440",
+      "input_bg": "#202531",
+      "input_text": "#eef1f7",
+      "table_head": "#232937",
+      "hover_bg": "rgba(255,255,255,0.05)",
+      "accent": "#4f8cff",
+      "button": "#2d3645"
+    }
+  },
+  {
+    "id": "light",
+    "name": "Light",
+    "locked": true,
+    "palette": {
+      "background": "#edf0f5",
+      "sidebar": "#e3e7ee",
+      "card": "#ffffff",
+      "text": "#1f2328",
+      "muted": "#5a616d",
+      "line": "#d6dbe3",
+      "input_bg": "#ffffff",
+      "input_text": "#1f2328",
+      "table_head": "#e9edf3",
+      "hover_bg": "rgba(0,0,0,0.04)",
+      "accent": "#4f8cff",
+      "button": "#3b3f45"
+    }
+  },
+  {
+    "id": "hacker",
+    "name": "Hacker",
+    "locked": true,
+    "palette": {
+      "background": "#0a0f0c",
+      "sidebar": "#0f1713",
+      "card": "#101c16",
+      "text": "#d9ffe8",
+      "muted": "#7fc9a4",
+      "line": "#173425",
+      "input_bg": "#111d17",
+      "input_text": "#d9ffe8",
+      "table_head": "#122119",
+      "hover_bg": "rgba(120,255,180,0.08)",
+      "accent": "#25f4a0",
+      "button": "#1f7a52"
+    }
+  },
+  {
+    "id": "pterodactyl",
+    "name": "Pterodactyl",
+    "locked": true,
+    "palette": {
+      "background": "#0f172a",
+      "sidebar": "#111827",
+      "card": "#111827",
+      "text": "#e5e7eb",
+      "muted": "#9ca3af",
+      "line": "#1f2937",
+      "input_bg": "#111827",
+      "input_text": "#e5e7eb",
+      "table_head": "#1f2937",
+      "hover_bg": "rgba(59,130,246,0.08)",
+      "accent": "#3b82f6",
+      "button": "#2563eb"
+    }
+  },
+  {
+    "id": "pufferpanel",
+    "name": "PufferPanel",
+    "locked": true,
+    "palette": {
+      "background": "#141218",
+      "sidebar": "#1a1622",
+      "card": "#1b1824",
+      "text": "#f5f3ff",
+      "muted": "#b9b3c8",
+      "line": "#2b2437",
+      "input_bg": "#1c1a25",
+      "input_text": "#f5f3ff",
+      "table_head": "#221d2d",
+      "hover_bg": "rgba(255,159,67,0.1)",
+      "accent": "#f97316",
+      "button": "#f97316"
+    }
+  },
+  {
+    "id": "ctrlpanel",
+    "name": "CtrlPanel.gg",
+    "locked": true,
+    "palette": {
+      "background": "#101417",
+      "sidebar": "#151a1f",
+      "card": "#171c22",
+      "text": "#e6f1ff",
+      "muted": "#98a2b3",
+      "line": "#242b33",
+      "input_bg": "#1a2028",
+      "input_text": "#e6f1ff",
+      "table_head": "#1f2630",
+      "hover_bg": "rgba(0,214,255,0.08)",
+      "accent": "#00d6ff",
+      "button": "#0ea5e9"
+    }
+  }
+]

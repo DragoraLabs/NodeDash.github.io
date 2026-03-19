@@ -1,0 +1,30 @@
+[
+  {
+    "id": "node-1",
+    "name": "Primary Node",
+    "url": "http://127.0.0.1:8080",
+    "secret": "nw_secret_3f39dea3",
+    "token": "nw_node_ae2901ab",
+    "panelSecret": "nw_secret_3f39dea3",
+    "agentSecret": "nw_secret_3f39dea3",
+    "protocol": "signed",
+    "status": "offline",
+    "lastHeartbeat": "2026-03-19T09:53:23.863Z",
+    "resources": {
+      "cpuPercent": 70.6,
+      "ramUsedMb": 4412,
+      "ramTotalMb": 8102,
+      "ramUsedPercent": 54.455689953097995,
+      "diskUsedMb": 69134,
+      "diskTotalMb": 476937,
+      "diskUsedPercent": 14.495415537062547
+    },
+    "ip": "172.28.96.1",
+    "system": {
+      "cpu": 4,
+      "ram": 8102,
+      "disk": 476937
+    },
+    "publicKey": "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwFW2jxDeK31BZatlCgLR\n9ZiIfvlwKeljvVxvY5Ps7rAi6sHem0C5rsCJ1ALkmBiJ42sdcPWOF9Qmj7j/fQGl\nT65O068G0em9kSPQAvpNvY1eDAYiPpH7rZpTpcBl3bJYJE/ivbIqikalCq9VpbUB\nep9VYsdRU2Mdfzw5ApOaxNWGCKNzWNRizUNpbXkoSuBhVQhdnFz0+gif4J2I/24l\n68GUt/o7uvvsPEO8bwPT6UUHe5l69kmGcBLYIAti4bZwcARhiNMWo0G+kvxw17go\nYWUR4g56kDv9dnij1BssqcV+p7Pw9iJn26IYzIsh+/j7dyffgu3lG1FDc0tzVo8d\nYiQTYQFbL5s3vzW/SFcs3X4MMfsIT4iDQAgbzXxmxblQe6vviIzM/4/Q7bfFGMv1\nY8bztF1s5ZbAYZOZc5kR/klufdfW2hCe61cfp/RYe/4MORUAKCBGHPMu310t2acb\npQTBLq0/APvogoYDjgG1y4eklWw+HXPgQgQi72ITypn28CLwBYklJbHksjOYp/IY\nTfjijZC8ARPOUXUIo+ooPhxC/RqURVaQtM/pR8NvNdrmEa6h9cJqodDEsy00UEMZ\nqoQw3MHs4kC1QrqI+O9zXCzSHfnsEhpWdZAm/rGJ85oMfeLV9OI7gODlziCMTgXK\nevLcGM9uD9SNveWgoQhu22sCAwEAAQ==\n-----END PUBLIC KEY-----"
+  }
+]

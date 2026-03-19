@@ -1,0 +1,22 @@
+[
+  {
+    "id": "u-admin",
+    "name": "Administrator",
+    "email": "admin@example.com",
+    "role": "admin",
+    "passwordHash": "eyJhbGdvIjoicGJrZGYyIiwiaXRlcmF0aW9ucyI6MTIwMDAwLCJrZXlsZW4iOjMyLCJkaWdlc3QiOiJzaGEyNTYiLCJzYWx0IjoiNGVkMzI0YTgwOGQ1N2Y0MTVmYjEzMjU0NmZlNTllZTEiLCJoYXNoIjoiYzczZTkxNzMzZTc4OTkwOGI2YTI1MTFlMDA2OTg0Zjc2ZThkMjgxMGM0YTVkMGU0ZmU4M2YzODFmMTY2NjRmYSJ9",
+    "createdAt": "2026-03-04T12:53:19.648Z",
+    "theme": "ctrlpanel",
+    "server_limit": 100
+  },
+  {
+    "id": "079cd272-7b86-4eeb-89b6-aca9faddfe16",
+    "name": "no3035564@gmail.com",
+    "email": "no3035564@gmail.com",
+    "role": "admin",
+    "passwordHash": "eyJhbGdvIjoicGJrZGYyIiwiaXRlcmF0aW9ucyI6MTIwMDAwLCJrZXlsZW4iOjMyLCJkaWdlc3QiOiJzaGEyNTYiLCJzYWx0IjoiMjc1NzM5Y2I2NTQwZGZkOTE5NjFjNzhiYWYwNTQzYjYiLCJoYXNoIjoiYTAzNTkzMmQ5OTViYzlkODgwZDA2YTJkNzE5YjMxNDY2NzMxOGEwYTdhNDUxYzc3NjU1NmIxMjExNjgyOWFhZSJ9",
+    "createdAt": "2026-03-04T13:10:39.509Z",
+    "theme": "ctrlpanel",
+    "server_limit": 1
+  }
+]

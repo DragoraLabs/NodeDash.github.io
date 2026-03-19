@@ -1,0 +1,51 @@
+[
+  {
+    "uuid": "d464350d-647a-4f91-b4a3-d7476bb6b5ad",
+    "name": "server",
+    "nodeId": "node-1",
+    "runtime": "java",
+    "runtimeVersion": "21",
+    "templateId": "minecraft-paper",
+    "image": "eclipse-temurin:21-jre",
+    "entryFile": "server.jar",
+    "startCommand": "java -jar server.jar",
+    "ramLimitMb": 512,
+    "cpuLimitPercent": 100,
+    "autoRestart": true,
+    "suspended": false,
+    "status": "created",
+    "createdAt": "2026-03-19T09:39:53.389Z",
+    "updatedAt": "2026-03-19T09:43:16.444Z",
+    "createdBy": "u-admin",
+    "lastExit": null,
+    "resources": {
+      "cpuPercent": 0,
+      "ramMb": 0
+    },
+    "error": "This operation was aborted"
+  },
+  {
+    "uuid": "9ecf4d18-5aea-4690-9414-d5c3cef2b493",
+    "name": "hello",
+    "nodeId": "node-1",
+    "runtime": "java",
+    "runtimeVersion": "21",
+    "templateId": "minecraft-paper",
+    "image": "eclipse-temurin:21-jre",
+    "entryFile": "server.jar",
+    "startCommand": "java -Xmx4G -Xms1G -jar server.jar --nogui",
+    "ramLimitMb": 6000,
+    "cpuLimitPercent": 100,
+    "autoRestart": true,
+    "suspended": false,
+    "status": "starting",
+    "createdAt": "2026-03-19T09:49:30.594Z",
+    "updatedAt": "2026-03-19T09:49:39.342Z",
+    "createdBy": "u-admin",
+    "lastExit": null,
+    "resources": {
+      "cpuPercent": 0,
+      "ramMb": 0
+    }
+  }
+]
